@@ -106,6 +106,65 @@ const renderLabels = (labels = []) => {
     })
     .join("");
 };
+// Modal content part
+const createModalContent = (issue) => {
+  const {
+    title = "Untitled Issue",
+    description = "No description available",
+    status = "open",
+    labels = [],
+    priority = "low",
+    author = "unknown",
+    createdAt,
+    assignee = author || "Unknown Assignee",
+  } = issue;
+  const normalizedStatus = normalizeStatus(status);
+  const statusText = normalizedStatus === "closed" ? "Closed" : "Opened";
+  return `
+    <div class="p-8 sm:p-10">
+      <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-4">
+        ${title}
+      </h3>
+      <div class="flex flex-wrap items-center gap-3 text-sm mb-6">
+        <span class="px-4 py-1 rounded-full font-medium ${getModalStatusClass(status)}">
+          ${statusText}
+        </span>
+        <span class="text-slate-400">•</span>
+        <span class="text-slate-500">Opened by</span>
+        <span class="text-slate-600 font-medium">${author}</span>
+        <span class="text-slate-400">•</span>
+        <span class="text-slate-500">${formatDate(createdAt)}</span>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-6">
+        ${renderLabels(labels)}
+      </div>
+      <p class="text-slate-500 text-lg leading-8 mb-8">
+        ${description}
+      </p>
+      <div class="bg-slate-50 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8">
+        <div>
+          <p class="text-slate-500 text-lg mb-2">Assignee:</p>
+          <h4 class="text-2xl font-bold text-slate-800">
+            ${assignee}
+          </h4>
+        </div>
+        <div>
+          <p class="text-slate-500 text-lg mb-2">Priority:</p>
+          <span class="px-4 py-2 rounded-full text-sm font-bold uppercase ${getPriorityBadgeClass(priority)}">
+            ${priority}
+          </span>
+        </div>
+      </div>
+      <div class="flex justify-end">
+        <form method="dialog">
+          <button class="btn text-white border-none bg-gradient-to-r from-violet-700 to-purple-600 px-8 rounded-xl">
+            Close
+          </button>
+        </form>
+      </div>
+    </div>
+  `;
+};
 
 // Open modal issue
 const openIssueModal = (issue) => {
@@ -133,7 +192,7 @@ const createIssueCard = (issue) => {
   } = issue;
   const statusStyles = getStatusStyles(status);
   return `
-    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden ${statusStyles.border}">
+    <div class="bg-white rounded-lg border-t-4 border-slate-200 shadow-sm overflow-hidden ${statusStyles.border}">
       <div class="p-4">
         <div class="flex items-start justify-between gap-3 mb-4">
           <span class="w-8 h-8 rounded-full flex items-center justify-center ${statusStyles.icon}">
