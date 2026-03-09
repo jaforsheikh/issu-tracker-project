@@ -3,88 +3,134 @@ const isLoggedIn = localStorage.getItem("isLoggedIn");
 if (isLoggedIn !== "true") {
   window.location.href = "index.html";
 }
-
+// Elements
 const issuesContainer = document.getElementById("issuesContainer");
 const issueCount = document.getElementById("issueCount");
 const allBtn = document.getElementById("allBtn");
 const openBtn = document.getElementById("openBtn");
 const closedBtn = document.getElementById("closedBtn");
 const searchInput = document.getElementById("searchInput");
-
+// Modal elements
+const issueModal = document.getElementById("issueModal");
+const modalContent = document.getElementById("modalContent");
+// API
 const API_URL = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
-
 let allIssues = [];
 let currentFilter = "all";
-
+// Normalize status
+const normalizeStatus = (status) => status?.toLowerCase().trim() || "";
+// Date format
 const formatDate = (dateString) => {
+  if (!dateString) return "No date";
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US");
 };
-
+// Priority style for cards
 const getPriorityClass = (priority) => {
-  if (priority === "high") return "bg-red-100 text-red-500";
-  if (priority === "medium") return "bg-yellow-100 text-yellow-600";
-  if (priority === "low") return "bg-slate-100 text-slate-400";
+  const p = priority?.toLowerCase().trim();
+  if (p === "high") return "bg-red-100 text-red-500";
+  if (p === "medium") return "bg-yellow-100 text-yellow-600";
+  if (p === "low") return "bg-slate-100 text-slate-400";
+
   return "bg-slate-100 text-slate-500";
 };
-
-const getBorderClass = (status) => {
-  return status === "closed"
-    ? "border-t-4 border-violet-500"
-    : "border-t-4 border-green-500";
+// Priority style for modal
+const getPriorityBadgeClass = (priority) => {
+  const p = priority?.toLowerCase().trim();
+  if (p === "high") return "bg-red-500 text-white";
+  if (p === "medium") return "bg-yellow-400 text-slate-800";
+  if (p === "low") return "bg-slate-200 text-slate-500";
+  return "bg-slate-200 text-slate-600";
 };
+// Modal status class
+const getModalStatusClass = (status) => {
+  const s = normalizeStatus(status);
+  if (s === "closed") {
+    return "bg-violet-500 text-white";
+  }
+  return "bg-green-500 text-white";
+};
+// Card status style
+const getStatusStyles = (status) => {
+  const s = normalizeStatus(status);
 
-const renderLabels = (labels) => {
+  if (s === "closed") {
+    return {
+      border: "border-t-4 border-violet-500",
+      icon: "bg-violet-100 text-violet-500",
+    };
+  }
+  if (s === "open") {
+    return {
+      border: "!border-t-4 !border-green-500",
+      icon: "bg-green-100 text-green-500",
+    };
+  }
+  return {
+    border: "border-t-4 border-slate-300",
+    icon: "bg-slate-100 text-slate-500",
+  };
+};
+// Labels render
+const renderLabels = (labels = []) => {
   return labels
     .map((label) => {
+      const lowerLabel = label?.toLowerCase().trim();
       let classes = "border border-slate-300 text-slate-600 bg-slate-50";
-
-      if (label === "bug") {
+      if (lowerLabel === "bug") {
         classes = "border border-red-300 text-red-500 bg-red-50";
-      } else if (label === "help wanted") {
+      } else if (lowerLabel === "help wanted") {
         classes = "border border-yellow-300 text-yellow-600 bg-yellow-50";
-      } else if (label === "enhancement") {
+      } else if (lowerLabel === "enhancement") {
         classes = "border border-green-300 text-green-600 bg-green-50";
-      } else if (label === "documentation") {
+      } else if (lowerLabel === "documentation") {
         classes = "border border-blue-300 text-blue-600 bg-blue-50";
-      } else if (label === "good first issue") {
+      } else if (lowerLabel === "good first issue") {
         classes = "border border-purple-300 text-purple-600 bg-purple-50";
       }
-
-      return `<span class="px-3 py-1 rounded-full text-xs font-medium capitalize ${classes}">${label}</span>`;
+      return `
+        <span class="px-3 py-1 rounded-full text-xs font-medium capitalize ${classes}">
+          ${label}
+        </span>
+      `;
     })
     .join("");
 };
 
+// Global click handler for priority
+window.handlePriorityClick = (id) => {
+  const selectedIssue = allIssues.find((issue) => issue.id === id);
+  if (selectedIssue) {
+    openIssueModal(selectedIssue);
+  }
+};
+// Card create
 const createIssueCard = (issue) => {
   const {
-    id,
-    title,
-    description,
-    status,
-    labels,
-    priority,
-    author,
+    id = "N/A",
+    title = "Untitled Issue",
+    description = "No description available",
+    status = "open",
+    labels = [],
+    priority = "low",
+    author = "unknown",
     createdAt,
   } = issue;
-
+  const statusStyles = getStatusStyles(status);
   return `
-    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden ${getBorderClass(status)}">
+    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden ${statusStyles.border}">
       <div class="p-4">
         <div class="flex items-start justify-between gap-3 mb-4">
-          <span class="w-8 h-8 rounded-full flex items-center justify-center ${
-            status === "closed"
-              ? "bg-violet-100 text-violet-500"
-              : "bg-green-100 text-green-500"
-          }">
+          <span class="w-8 h-8 rounded-full flex items-center justify-center ${statusStyles.icon}">
             <i class="fa-regular fa-circle-check text-sm"></i>
           </span>
-
-          <span class="px-4 py-1 rounded-full text-sm font-medium uppercase ${getPriorityClass(priority)}">
+          <span
+            onclick="handlePriorityClick(${id})"
+            class="px-4 py-1 rounded-full text-sm font-medium uppercase cursor-pointer ${getPriorityClass(priority)}"
+          >
             ${priority}
           </span>
         </div>
-
         <h4 class="text-lg font-semibold text-slate-800 leading-snug mb-3">
           ${title}
         </h4>
@@ -92,12 +138,10 @@ const createIssueCard = (issue) => {
         <p class="text-slate-500 text-sm leading-6 mb-4">
           ${description}
         </p>
-
         <div class="flex flex-wrap gap-2 mb-4">
           ${renderLabels(labels)}
         </div>
       </div>
-
       <div class="border-t border-slate-200 px-4 py-3 text-sm text-slate-500">
         <p>#${id} by ${author}</p>
         <p class="mt-1">${formatDate(createdAt)}</p>
@@ -105,10 +149,9 @@ const createIssueCard = (issue) => {
     </div>
   `;
 };
-
+// Render issues
 const renderIssues = (issues) => {
   issueCount.textContent = `${issues.length} Issues`;
-
   if (!issues.length) {
     issuesContainer.innerHTML = `
       <div class="col-span-full text-center py-10 text-slate-500">
@@ -117,58 +160,62 @@ const renderIssues = (issues) => {
     `;
     return;
   }
-
   issuesContainer.innerHTML = issues.map(createIssueCard).join("");
 };
-
+// Active button all
 const setActiveButton = (activeBtn) => {
   [allBtn, openBtn, closedBtn].forEach((btn) => {
+    if (!btn) return;
     btn.className =
-      "px-6 py-2 rounded-md border border-slate-300 text-slate-600 bg-white";
+      "px-6 py-2 rounded-lg border border-slate-300 text-slate-600 bg-white font-medium";
   });
-
-  activeBtn.className =
-    "px-6 py-2 rounded-md text-white bg-gradient-to-r from-violet-700 to-purple-600";
+  if (activeBtn) {
+    activeBtn.className =
+      "px-6 py-2 rounded-lg text-white bg-gradient-to-r from-violet-700 to-purple-600 font-medium";
+  }
 };
-
+// Filter issues
 const getFilteredIssues = () => {
   if (currentFilter === "open") {
-    return allIssues.filter((issue) => issue.status === "open");
+    return allIssues.filter(
+      (issue) => normalizeStatus(issue.status) === "open",
+    );
   }
-
   if (currentFilter === "closed") {
-    return allIssues.filter((issue) => issue.status === "closed");
+    return allIssues.filter(
+      (issue) => normalizeStatus(issue.status) === "closed",
+    );
   }
-
   return allIssues;
 };
-
+// Search + filter
 const handleSearchAndFilter = () => {
   const searchText = searchInput?.value.toLowerCase().trim() || "";
-
   let filteredIssues = getFilteredIssues();
-
   if (searchText) {
     filteredIssues = filteredIssues.filter((issue) => {
-      const titleMatch = issue.title.toLowerCase().includes(searchText);
+      const titleMatch = issue.title?.toLowerCase().includes(searchText);
       const descriptionMatch = issue.description
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(searchText);
-      return titleMatch || descriptionMatch;
+      const authorMatch = issue.author?.toLowerCase().includes(searchText);
+      const labelMatch = issue.labels?.some((label) =>
+        label.toLowerCase().includes(searchText),
+      );
+      return titleMatch || descriptionMatch || authorMatch || labelMatch;
     });
   }
-
   renderIssues(filteredIssues);
 };
-
+// Search input
 searchInput?.addEventListener("input", handleSearchAndFilter);
-
+// Load issues
 const loadIssues = async () => {
   try {
     const response = await fetch(API_URL);
     const result = await response.json();
-
-    allIssues = result.data;
+    allIssues = Array.isArray(result.data) ? result.data : [];
+    setActiveButton(allBtn);
     handleSearchAndFilter();
   } catch (error) {
     console.error("Fetch error:", error);
@@ -180,22 +227,21 @@ const loadIssues = async () => {
   }
 };
 
+// Buttons
 allBtn?.addEventListener("click", () => {
   currentFilter = "all";
   setActiveButton(allBtn);
   handleSearchAndFilter();
 });
-
 openBtn?.addEventListener("click", () => {
   currentFilter = "open";
   setActiveButton(openBtn);
   handleSearchAndFilter();
 });
-
 closedBtn?.addEventListener("click", () => {
   currentFilter = "closed";
   setActiveButton(closedBtn);
   handleSearchAndFilter();
 });
-
+// Initial load
 loadIssues();

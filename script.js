@@ -1,25 +1,3 @@
-// const login_Form = document.getElementById("login_Form");
-// const user_name = document.getElementById("user_name");
-// const password = document.getElementById("password");
-// const error_message = document.getElementById("error_message");
-
-// if (login_Form) {
-//   login_Form.addEventListener("submit", function (e) {
-//     e.preventDefault();
-
-//     const user = user_name.value.trim();
-//     const pass = password.value.trim();
-
-//     if (user === "admin" && pass === "admin123") {
-//       localStorage.setItem("isLoggedIn", "true");
-//       localStorage.setItem("username", user);
-//       error_message.textContent = "";
-//       window.location.href = "main.html";
-//     } else {
-//       error_message.textContent = "Invalid username or password";
-//     }
-//   });
-// }
 const loginForm = document.getElementById("login_Form");
 const userNameInput = document.getElementById("user_name");
 const passwordInput = document.getElementById("password");

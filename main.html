@@ -25,8 +25,8 @@
 
 <body class="bg-slate-100">
 
-  <!-- Navbar -->
-  <header class="bg-white shadow-sm border-b border-slate-200">
+  <!-- Navbar Section -->
+  <header class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="navbar px-0 min-h-[72px] flex-col gap-4 lg:flex-row">
 
@@ -60,24 +60,22 @@
             All
           </button>
 
-          <button id="openBtn" class="px-6 py-2 rounded-lg border border-slate-300 text-slate-600 bg-white font-medium">
+          <button id="openBtn" class="px-6 py-2 rounded-lg text-slate-600 bg-white font-medium">
             Open
           </button>
 
           <button id="closedBtn"
-            class="px-6 py-2 rounded-lg border border-slate-300 text-slate-600 bg-white font-medium">
+            class="px-6 py-2 rounded-lg  text-slate-600 bg-white font-medium">
             Closed
           </button>
         </div>
       </div>
-
-      <!-- Issue Summary + Cards -->
+      <!-- Issue Summary + Cards section-->
       <section class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 sm:p-6 border-b border-slate-200">
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 sm:p-6">
           <div class="flex items-center gap-2">
             <img src="assets/Aperture.png" alt="Issue Icon" class="w-11 h-11 object-contain" />
-
             <div>
               <h3 id="issueCount" class="text-2xl font-bold text-slate-800">50 Issues</h3>
               <p class="text-slate-500 text-sm mt-1">Track and manage your project issues</p>
@@ -102,6 +100,17 @@
 
     </div>
   </main>
+
+  <!-- Issue Details Modal  Section-->
+<dialog id="issueModal" class="modal">
+  <div class="modal-box max-w-3xl rounded-3xl p-0 bg-white shadow-xl overflow-hidden">
+    <div id="modalContent"></div>
+  </div>
+
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
 
   <script src="main.js"></script>
 </body>
