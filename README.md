@@ -1,4 +1,5 @@
 What is the difference between var, let, and const?
+
 Ans: var, let and const are all variable in JavaScript but var is old version. let has comes in es6. we can reassign let but not redeclare. and const ist use for redeclare or reassign.
 
 
