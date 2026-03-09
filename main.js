@@ -10,9 +10,19 @@ const allBtn = document.getElementById("allBtn");
 const openBtn = document.getElementById("openBtn");
 const closedBtn = document.getElementById("closedBtn");
 const searchInput = document.getElementById("searchInput");
+const loadingSpinner = document.getElementById("loadingSpinner");
 // Modal elements
 const issueModal = document.getElementById("issueModal");
 const modalContent = document.getElementById("modalContent");
+
+const showLoading = () => {
+  loadingSpinner.classList.remove("hidden");
+  issuesContainer.innerHTML = "";
+};
+
+const hideLoading = () => {
+  loadingSpinner.classList.add("hidden");
+};
 // API
 const API_URL = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 let allIssues = [];
@@ -27,40 +37,40 @@ const formatDate = (dateString) => {
 };
 // Priority style for cards
 const getPriorityClass = (priority) => {
-  const p = priority?.toLowerCase().trim();
-  if (p === "high") return "bg-red-100 text-red-500";
-  if (p === "medium") return "bg-yellow-100 text-yellow-600";
-  if (p === "low") return "bg-slate-100 text-slate-400";
+  const priorityCheck = priority?.toLowerCase().trim();
+  if (priorityCheck === "high") return "bg-red-100 text-red-500";
+  if (priorityCheck === "medium") return "bg-yellow-100 text-yellow-600";
+  if (priorityCheck === "low") return "bg-slate-100 text-slate-400";
 
   return "bg-slate-100 text-slate-500";
 };
 // Priority style for modal
 const getPriorityBadgeClass = (priority) => {
-  const p = priority?.toLowerCase().trim();
-  if (p === "high") return "bg-red-500 text-white";
-  if (p === "medium") return "bg-yellow-400 text-slate-800";
-  if (p === "low") return "bg-slate-200 text-slate-500";
+  const priorityStyle = priority?.toLowerCase().trim();
+  if (priorityStyle === "high") return "bg-red-500 text-white";
+  if (priorityStyle === "medium") return "bg-yellow-400 text-slate-800";
+  if (priorityStyle === "low") return "bg-slate-200 text-slate-500";
   return "bg-slate-200 text-slate-600";
 };
 // Modal status class
 const getModalStatusClass = (status) => {
-  const s = normalizeStatus(status);
-  if (s === "closed") {
+  const statusClass = normalizeStatus(status);
+  if (statusClass === "closed") {
     return "bg-violet-500 text-white";
   }
   return "bg-green-500 text-white";
 };
 // Card status style
 const getStatusStyles = (status) => {
-  const s = normalizeStatus(status);
+  const getStyle = normalizeStatus(status);
 
-  if (s === "closed") {
+  if (getStyle === "closed") {
     return {
       border: "border-t-4 border-violet-500",
       icon: "bg-violet-100 text-violet-500",
     };
   }
-  if (s === "open") {
+  if (getStyle === "open") {
     return {
       border: "!border-t-4 !border-green-500",
       icon: "bg-green-100 text-green-500",
@@ -97,6 +107,11 @@ const renderLabels = (labels = []) => {
     .join("");
 };
 
+// Open modal issue
+const openIssueModal = (issue) => {
+  modalContent.innerHTML = createModalContent(issue);
+  issueModal.showModal();
+};
 // Global click handler for priority
 window.handlePriorityClick = (id) => {
   const selectedIssue = allIssues.find((issue) => issue.id === id);
@@ -212,6 +227,7 @@ searchInput?.addEventListener("input", handleSearchAndFilter);
 // Load issues
 const loadIssues = async () => {
   try {
+    showLoading(); // spinner show
     const response = await fetch(API_URL);
     const result = await response.json();
     allIssues = Array.isArray(result.data) ? result.data : [];
@@ -224,9 +240,10 @@ const loadIssues = async () => {
         Failed to load issues.
       </div>
     `;
+  } finally {
+    hideLoading(); // spinner hide
   }
 };
-
 // Buttons
 allBtn?.addEventListener("click", () => {
   currentFilter = "all";

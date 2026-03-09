@@ -64,16 +64,18 @@
             Open
           </button>
 
-          <button id="closedBtn"
-            class="px-6 py-2 rounded-lg  text-slate-600 bg-white font-medium">
+          <button id="closedBtn" class="px-6 py-2 rounded-lg  text-slate-600 bg-white font-medium">
             Closed
           </button>
         </div>
       </div>
+      <!-- Loading Spinner -->
+      <div id="loadingSpinner" class="hidden flex justify-center items-center py-16">
+        <span class="loading loading-spinner loading-lg text-violet-600"></span>
+      </div>
       <!-- Issue Summary + Cards section-->
       <section class="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 sm:p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 sm:p-6">
           <div class="flex items-center gap-2">
             <img src="assets/Aperture.png" alt="Issue Icon" class="w-11 h-11 object-contain" />
             <div>
@@ -102,15 +104,15 @@
   </main>
 
   <!-- Issue Details Modal  Section-->
-<dialog id="issueModal" class="modal">
-  <div class="modal-box max-w-3xl rounded-3xl p-0 bg-white shadow-xl overflow-hidden">
-    <div id="modalContent"></div>
-  </div>
+  <dialog id="issueModal" class="modal">
+    <div class="modal-box max-w-3xl rounded-3xl p-0 bg-white shadow-xl overflow-hidden">
+      <div id="modalContent"></div>
+    </div>
 
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
 
   <script src="main.js"></script>
 </body>
