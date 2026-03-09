@@ -208,7 +208,6 @@ const createIssueCard = (issue) => {
         <h4 class="text-lg font-semibold text-slate-800 leading-snug mb-3">
           ${title}
         </h4>
-
         <p class="text-slate-500 text-sm leading-6 mb-4">
           ${description}
         </p>

@@ -24,7 +24,6 @@
 </head>
 
 <body class="bg-slate-100">
-
   <!-- Navbar Section -->
   <header class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,11 +46,9 @@
       </div>
     </div>
   </header>
-
   <!-- Main Section -->
   <main class="py-6 sm:py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
       <!-- Tabs -->
       <div class="bg-white rounded-2xl p-4 shadow-sm mb-6">
         <div class="flex flex-wrap gap-3">
@@ -59,11 +56,9 @@
             class="px-6 py-2 rounded-lg text-white bg-gradient-to-r from-violet-700 to-purple-600 font-medium">
             All
           </button>
-
           <button id="openBtn" class="px-6 py-2 rounded-lg text-slate-600 bg-white font-medium">
             Open
           </button>
-
           <button id="closedBtn" class="px-6 py-2 rounded-lg  text-slate-600 bg-white font-medium">
             Closed
           </button>
@@ -71,11 +66,8 @@
       </div>
       <!-- Loading Spinner -->
       <div id="loadingSpinner" class="hidden flex justify-center items-center py-16">
-
         <span class="loading loading-spinner loading-lg text-violet-600"></span>
-
       </div>
-
       <!-- Issue Summary + Cards section-->
       <section class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 sm:p-6">
@@ -86,37 +78,30 @@
               <p class="text-slate-500 text-sm mt-1">Track and manage your project issues</p>
             </div>
           </div>
-
           <div class="flex items-center gap-4 text-sm text-slate-700">
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
               <span>Open</span>
             </div>
-
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-violet-500 inline-block"></span>
               <span>Closed</span>
             </div>
           </div>
         </div>
-
         <div id="issuesContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 p-4 sm:p-6"></div>
       </section>
-
     </div>
   </main>
-
   <!-- Issue Details Modal  Section-->
   <dialog id="issueModal" class="modal">
     <div class="modal-box max-w-3xl rounded-3xl p-0 bg-white shadow-xl overflow-hidden">
       <div id="modalContent"></div>
     </div>
-
     <form method="dialog" class="modal-backdrop">
       <button>close</button>
     </form>
   </dialog>
-
   <script src="main.js"></script>
 </body>
 
